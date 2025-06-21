@@ -1,0 +1,76 @@
+# Lightning Network specific
+*.macaroon
+*.key
+*.cert
+*.db
+*.walletdb
+admin.macaroon
+readonly.macaroon
+invoice.macaroon
+
+# Bitcoin node data
+blocks/
+chainstate/
+*.dat
+bitcoin.conf
+
+# LND specific
+lnd.conf
+tls.cert
+tls.key
+wallet.db
+channel.db
+peer.db
+
+# Logs
+*.log
+logs/
+lnd.log
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Node.js (if we use it for web interface)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python (if we use it)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+.ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build outputs
+dist/
+build/
+*.tar.gz
+*.zip
