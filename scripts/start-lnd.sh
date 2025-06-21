@@ -37,9 +37,9 @@ else
     print_success "LND is installed"
 fi
 
-# Check if Bitcoin is running
-if ! pgrep -x "bitcoind" > /dev/null; then
-    print_error "Bitcoin daemon is not running. Please start Bitcoin first:"
+# Check if Bitcoin container is running
+if ! docker ps --format "table {{.Names}}" | grep -q "bitcoin-testnet"; then
+    print_error "Bitcoin testnet container is not running. Please start Bitcoin first:"
     print_status "Run: ./scripts/start-bitcoin.sh"
     exit 1
 fi
