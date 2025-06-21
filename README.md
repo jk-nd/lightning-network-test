@@ -1,13 +1,13 @@
 # Lightning Network Test Implementation
 
-A comprehensive test environment for exploring and learning the Bitcoin Lightning Network.
+A comprehensive test environment for exploring and learning the Bitcoin Lightning Network using Docker containers.
 
 ## Overview
 
 This project provides a complete setup for testing and experimenting with the Lightning Network, including:
 
-- Bitcoin testnet node configuration
-- Lightning Network Daemon (LND) setup
+- Bitcoin testnet node running in Docker
+- Lightning Network Daemon (LND) running in Docker
 - Web interface for interacting with Lightning Network
 - Payment channel management
 - Transaction testing tools
@@ -28,7 +28,7 @@ lightning-network-test/
 
 - macOS (tested on macOS 24.5.0)
 - Git
-- Docker (optional, for containerized setup)
+- Docker Desktop (required for Bitcoin and LND containers)
 - Node.js (for web interface)
 - Python 3.8+ (for additional tools)
 
@@ -45,20 +45,45 @@ lightning-network-test/
    ./scripts/setup.sh
    ```
 
-3. **Start the Lightning Network node**
+3. **Start the Bitcoin testnet node (Docker)**
+   ```bash
+   ./scripts/start-bitcoin.sh
+   ```
+
+4. **Start the Lightning Network Daemon (Docker)**
    ```bash
    ./scripts/start-lnd.sh
    ```
 
-4. **Access the web interface**
+5. **Create a wallet (if needed)**
+   ```bash
+   ./scripts/create-wallet.sh
+   ```
+
+6. **Access the web interface**
    ```bash
    ./scripts/start-web.sh
    ```
 
+## Docker Containers
+
+This project uses Docker containers for reliable, cross-platform operation:
+
+- **Bitcoin testnet**: `kylemanna/bitcoind:latest`
+- **LND**: `lightninglabs/lnd:v0.17.5-beta`
+
+### Container Management
+
+- **View running containers**: `docker ps`
+- **View Bitcoin logs**: `docker logs -f bitcoin-testnet`
+- **View LND logs**: `docker logs -f lnd-testnet`
+- **Stop Bitcoin**: `docker stop bitcoin-testnet`
+- **Stop LND**: `docker stop lnd-testnet`
+
 ## Features
 
-- [ ] Bitcoin testnet node setup
-- [ ] LND installation and configuration
+- [x] Bitcoin testnet node setup (Docker)
+- [x] LND installation and configuration (Docker)
 - [ ] Payment channel creation and management
 - [ ] Lightning invoice generation
 - [ ] Payment routing and testing
