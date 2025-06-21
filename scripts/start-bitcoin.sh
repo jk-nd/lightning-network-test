@@ -60,7 +60,7 @@ fi
 print_status "Starting Bitcoin testnet container..."
 docker run -d \
     --name bitcoin-testnet \
-    --network host \
+    --network ln-testnet \
     -v "$(pwd)/bitcoin-node/data:/home/bitcoin/.bitcoin" \
     -v "$(pwd)/bitcoin-node/bitcoin.conf:/home/bitcoin/.bitcoin/bitcoin.conf" \
     kylemanna/bitcoind:latest \

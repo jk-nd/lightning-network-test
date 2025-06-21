@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Lightning Network Daemon (LND) Startup Script
+# Lightning Network Daemon (LND) Startup Script (Docker Version)
 
 set -e
 
-echo "⚡ Starting Lightning Network Daemon (LND)..."
+echo "⚡ Starting Lightning Network Daemon (LND) using Docker..."
 
 # Colors for output
 RED='\033[0;31m'
@@ -29,12 +29,21 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check if LND is installed
-if ! command -v lnd &> /dev/null; then
-    print_warning "LND not found. Installing via Homebrew..."
-    brew install lnd
+# Check if Docker is installed
+if ! command -v docker &> /dev/null; then
+    print_error "Docker is not installed. Please install Docker Desktop first."
+    print_status "Download from: https://www.docker.com/products/docker-desktop/"
+    exit 1
 else
-    print_success "LND is installed"
+    print_success "Docker is installed"
+fi
+
+# Check if Docker is running
+if ! docker info &> /dev/null; then
+    print_error "Docker is not running. Please start Docker Desktop first."
+    exit 1
+else
+    print_success "Docker is running"
 fi
 
 # Check if Bitcoin container is running
@@ -47,37 +56,45 @@ fi
 # Create LND data directory if it doesn't exist
 mkdir -p lnd-config/data
 
-# Check if LND is already running
-if pgrep -x "lnd" > /dev/null; then
-    print_warning "LND is already running"
+# Check if LND container is already running
+if docker ps --format "table {{.Names}}" | grep -q "lnd-testnet"; then
+    print_warning "LND testnet container is already running"
     print_status "LND is running on port 10009"
     exit 0
 fi
 
-# Start LND
-print_status "Starting LND..."
-lnd --configfile=./lnd-config/lnd.conf --datadir=./lnd-config/data &
+# Start LND container
+print_status "Starting LND container..."
+docker run -d \
+    --name lnd-testnet \
+    --network ln-testnet \
+    -v "$(pwd)/lnd-config/data:/root/.lnd" \
+    -v "$(pwd)/lnd-config/lnd.conf:/root/.lnd/lnd.conf" \
+    lightninglabs/lnd:v0.17.5-beta \
+    lnd --configfile=/root/.lnd/lnd.conf
 
 # Wait for LND to start
 print_status "Waiting for LND to start..."
-sleep 5
+sleep 10
 
-# Check if LND started successfully
-if pgrep -x "lnd" > /dev/null; then
+# Check if LND container started successfully
+if docker ps --format "table {{.Names}}" | grep -q "lnd-testnet"; then
     print_success "LND started successfully!"
     print_status "LND is running on port 10009"
     print_status "REST API: https://127.0.0.1:8080"
     print_status "gRPC: 127.0.0.1:10009"
+    print_status "Container name: lnd-testnet"
 else
-    print_error "Failed to start LND"
+    print_error "Failed to start LND container"
     exit 1
 fi
 
-print_status "To stop LND, run: ./scripts/stop-lnd.sh"
-print_status "To view logs, run: tail -f ./lnd-config/data/logs/bitcoin/testnet/lnd.log"
+print_status "To stop LND, run: docker stop lnd-testnet"
+print_status "To view logs, run: docker logs -f lnd-testnet"
+print_status "To remove container, run: docker rm lnd-testnet"
 
 # Check if wallet exists
-if [ -f "./lnd-config/data/data/chain/bitcoin/testnet/wallet.db" ]; then
+if docker exec lnd-testnet ls /root/.lnd/data/chain/bitcoin/testnet/wallet.db &> /dev/null; then
     print_success "Wallet already exists"
 else
     print_warning "No wallet found. You'll need to create one:"

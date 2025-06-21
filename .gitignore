@@ -8,6 +8,13 @@ admin.macaroon
 readonly.macaroon
 invoice.macaroon
 
+# Wallet credentials (NEVER commit these!)
+wallet password
+wallet-password*
+*wallet*
+*seed*
+*password*
+
 # Bitcoin node data
 blocks/
 chainstate/
